@@ -1,0 +1,52 @@
+class Solution {
+    
+     class Pair {
+        int key;   // difference from x
+        int value; // actual value
+
+        Pair(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+    
+    int[] printKClosest(int[] arr, int k, int x) {
+        
+      int n = arr.length;
+
+        PriorityQueue<Pair> maxheap = new PriorityQueue<>((a, b) -> {
+            if (b.key != a.key)
+                return b.key - a.key;       // larger diff on top
+            else
+                return a.value - b.value;   // smaller value below
+        });
+
+        for (int i = 0; i < n; i++) {
+            if (arr[i] == x) continue;
+
+            int diff = Math.abs(arr[i] - x);
+            maxheap.add(new Pair(diff, arr[i]));
+
+            if (maxheap.size() > k) {
+                maxheap.poll();
+            }
+        }
+
+        int[] result = new int[k];
+        int index = 0;
+
+        while (!maxheap.isEmpty()) {
+            result[index++] = maxheap.poll().value;
+        }
+
+        // optional reverse to match expected output order
+        for (int i = 0; i < k / 2; i++) {
+            int temp = result[i];
+            result[i] = result[k - i - 1];
+            result[k - i - 1] = temp;
+        }
+
+        return result;
+    
+    }
+}
